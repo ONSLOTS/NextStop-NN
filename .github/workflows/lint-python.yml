@@ -28,7 +28,7 @@ jobs:
 
       - name: Sync dependencies
         working-directory: backend
-        run: uv sync --frozen
+        run: uv sync 
 
       - name: Run Ruff linter
         working-directory: backend

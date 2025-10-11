@@ -10,3 +10,28 @@ dependencies = []
 dev = [
     "ruff>=0.14.0",
 ]
+
+[tool.ruff]
+select = [
+    "E",
+    "F",
+    "I",
+    "A",
+    "COM",
+    "ALL",
+    "ISC",
+    "RET",
+    "Q",
+    "N",
+]
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "double"
+docstring-quotes = "double"
+
+[tool.ruff.pep8-naming]
+ignore-names = ["setUp", "tearDown", "setUpClass", "tearDownClass"]
+
+
+
