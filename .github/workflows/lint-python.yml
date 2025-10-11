@@ -1,0 +1,35 @@
+name: Ruff Lint
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/**
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  ruff-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Sync dependencies
+        working-directory: backend
+        run: uv sync --frozen
+
+      - name: Run Ruff linter
+        working-directory: backend
+        run: uv run ruff check .
