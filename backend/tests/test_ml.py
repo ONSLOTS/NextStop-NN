@@ -15,6 +15,13 @@ TESTS_FOR_TEST: list[str] = [
     'один напишет программу извлечения лампочки, другой — вкручивания лампочки, '
     'a третий проведет тестирование.',
 ]
+PROMPT_FOR_TEST = 'Что ты за модель?'
+
+
+class TestTextGenerationModel(unittest.TestCase):
+    def test_call(self: typing.Self) -> None:
+        ans: str = ml.text_generation_model(PROMPT_FOR_TEST)
+        self.assertIsInstance(ans, str)
 
 
 class TestEmbeddingModel(unittest.TestCase):
