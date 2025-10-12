@@ -13,7 +13,7 @@ dev = [
 ]
 
 [tool.ruff.lint]
-select = [ "E", "F", "I", "A", "COM", "ALL", "ISC", "RET", "Q", "N" ]
+select = [ "E", "F", "I", "A", "ANN", "COM", "ISC", "RET", "Q", "N" ]
 
 ignore = [
     "D203",
