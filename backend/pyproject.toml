@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "fastapi[all]>=0.119.0",
+]
 
 [dependency-groups]
 dev = [
@@ -18,6 +20,8 @@ select = [ "E", "F", "I", "A", "COM", "ALL", "ISC", "RET", "Q", "N" ]
 ignore = [
     "D203",
     "D213",
+    "E402",
+    "PT009",
 ]
 
 [tool.ruff.lint.flake8-quotes]
