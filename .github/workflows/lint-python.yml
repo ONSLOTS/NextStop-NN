@@ -6,14 +6,20 @@ on:
       - main
       - develop
       - feature/**
+    paths:
+      - 'backend/**'
+
   pull_request:
     branches:
       - main
       - develop
+    paths:
+      - 'backend/**'
 
 jobs:
   ruff-lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,7 +34,7 @@ jobs:
 
       - name: Sync dependencies
         working-directory: backend
-        run: uv sync 
+        run: uv sync
 
       - name: Run Ruff linter
         working-directory: backend

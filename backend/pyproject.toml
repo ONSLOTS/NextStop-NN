@@ -5,7 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+
     "fastapi[all]>=0.119.0",
+    "hf-xet>=1.1.10",
+    "parametrize>=0.1.1",
+    "torch>=2.8.0",
+    "transformers>=4.57.0",
+
 ]
 
 [dependency-groups]
@@ -15,7 +21,7 @@ dev = [
 ]
 
 [tool.ruff.lint]
-select = [ "E", "F", "I", "A", "COM", "ALL", "ISC", "RET", "Q", "N" ]
+select = [ "E", "F", "I", "A", "ANN", "COM", "ISC", "RET", "Q", "N" ]
 
 ignore = [
     "D203",
