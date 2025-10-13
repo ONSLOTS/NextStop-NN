@@ -1,4 +1,5 @@
 """Tests of receiving data from frontend."""
+
 import pathlib
 import sys
 import unittest
@@ -30,32 +31,40 @@ class TestUserInput(unittest.TestCase):
         for key in data:
             self.assertIn(key, response.json().keys())
 
-    @parameterized.parameterized.expand([
-        ('case1', {
-            'prompt': 'Пиво, танчик, танк, балтика',
-            'time_for_walk': 'Gool',
-            'latitude': 14.88,
-            'longitude': 88.41,
-            }),
-        ('case2', {
-            'prompt': 'Пиво, танчик, танк, балтика',
-            'time_for_walk': 5,
-            'latitude': 'Slots',
-            'longitude': 88.41,
-        }),
-        ('case3', {
-            'prompt': 'Танчик' * 100,
-            'time_for_walk': 5,
-            'latitude': 14.88,
-            'longitude': 88.41,
-        }),
-    ])
+    @parameterized.parameterized.expand(
+        [
+            (
+                'case1',
+                {
+                    'prompt': 'Пиво, танчик, танк, балтика',
+                    'time_for_walk': 'Gool',
+                    'latitude': 14.88,
+                    'longitude': 88.41,
+                },
+            ),
+            (
+                'case2',
+                {
+                    'prompt': 'Пиво, танчик, танк, балтика',
+                    'time_for_walk': 5,
+                    'latitude': 'Slots',
+                    'longitude': 88.41,
+                },
+            ),
+            (
+                'case3',
+                {
+                    'prompt': 'Танчик' * 100,
+                    'time_for_walk': 5,
+                    'latitude': 14.88,
+                    'longitude': 88.41,
+                },
+            ),
+        ],
+    )
     def test_user_input_negative(self, name: str, data: dict) -> None:
         """Test unvalid json on /handle."""
         client = fastapi.testclient.TestClient(application.main.app)
         url = '/handle'
         response = client.post(url=url, json=data)
-        self.assertNotEqual(
-            response.status_code,
-            200,
-            msg=name)
+        self.assertNotEqual(response.status_code, 200, msg=name)

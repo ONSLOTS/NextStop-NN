@@ -1,4 +1,5 @@
 """Entrypoint of the application."""
+
 import fastapi
 import uvicorn
 from schemas import user_input
