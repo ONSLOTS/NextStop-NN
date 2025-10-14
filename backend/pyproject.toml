@@ -5,13 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-
     "fastapi[all]>=0.119.0",
     "hf-xet>=1.1.10",
     "parametrize>=0.1.1",
+    "qdrant-client>=1.15.1",
     "torch>=2.8.0",
     "transformers>=4.57.0",
-
 ]
 
 [dependency-groups]
@@ -28,6 +27,8 @@ ignore = [
     "D213",
     "E402",
     "PT009",
+    "E501",
+    "N805",
 ]
 
 [tool.ruff.lint.flake8-quotes]
@@ -38,5 +39,9 @@ docstring-quotes = "double"
 [tool.ruff.lint.pep8-naming]
 ignore-names = ["setUp", "tearDown", "setUpClass", "tearDownClass"]
 
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
 
-
+[tool.ruff.format]
+quote-style = "single"
