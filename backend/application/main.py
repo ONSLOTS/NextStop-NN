@@ -2,7 +2,8 @@
 
 import fastapi
 import uvicorn
-from schemas import user_input
+
+from schemas.user_input import UserInput
 
 app = fastapi.FastAPI()
 
