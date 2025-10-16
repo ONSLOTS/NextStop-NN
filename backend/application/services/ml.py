@@ -6,23 +6,64 @@ import torch
 import torch.nn.functional as f
 import transformers
 
+from ..models import place_payload
+
 
 class _TextGenerationModel:
     type_model: str = 'text-generation'
     name_model: str = 'Qwen/Qwen3-0.6B'
 
     def __init__(self: typing.Self) -> None:
-        self._model: transformers.TextGenerationPipeline = transformers.pipeline(
-            self.type_model,
+        self._tokenizer = transformers.AutoTokenizer.from_pretrained(self.name_model)
+        self._model = transformers.AutoModelForCausalLM.from_pretrained(
             self.name_model,
+            dtype='auto',
+            device_map='auto',
         )
 
-    def __call__(self: typing.Self, prompt: str) -> None:
+    def get_desc_selection(
+        self: typing.Self,
+        prompt: str,
+        places: list[place_payload.PlacePayload],
+    ) -> list[str]:
+        ans: list[str] = []
+        for place in places:
+            local_prompt: str = (
+                f'Напиши почему выбранное место ({place.title}) подходит запросу пользователя. '
+                f'Запрос пользователя: {prompt}. '
+                f'В ответе используй факты из описания выбранного места: {place.description}. '
+            )
+            ans.append(self(local_prompt))
+
+        return ans
+
+    def __call__(self: typing.Self, prompt: str) -> str:
         messages = [
             {'role': 'user', 'content': prompt},
         ]
-        text_answer: str = self._model(messages)[0]['generated_text'][1]['content']
-        return text_answer.split('</think>')[-1].strip()
+        text = self._tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=False,
+        )
+        model_inputs = self._tokenizer([text], return_tensors='pt').to(
+            self._model.device,
+        )
+        generated_ids = self._model.generate(
+            **model_inputs,
+            max_new_tokens=32768,
+        )
+        output_ids = generated_ids[0][len(model_inputs.input_ids[0]) :].tolist()
+        try:
+            index = len(output_ids) - output_ids[::-1].index(151668)
+        except ValueError:
+            index = 0
+
+        return self._tokenizer.decode(
+            output_ids[index:],
+            skip_special_tokens=True,
+        ).strip('\n')
 
 
 text_generation_model = _TextGenerationModel()
