@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as f
 import transformers
 
-from ..models import place_payload
+from models import place_payload
 
 
 class _TextGenerationModel:

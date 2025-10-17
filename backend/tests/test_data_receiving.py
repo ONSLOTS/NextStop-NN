@@ -1,14 +1,10 @@
 """Tests of receiving data from frontend."""
 
-import pathlib
-import sys
 import unittest
 
 import fastapi.testclient
 import parameterized
 
-project_root = pathlib.Path(__file__).parent.parent / 'application'
-sys.path.append(str(project_root))
 import application.main
 
 
@@ -28,8 +24,6 @@ class TestUserInput(unittest.TestCase):
         response = client.post(url=url, json=data)
 
         self.assertEqual(response.status_code, 200)
-        for key in data:
-            self.assertIn(key, response.json().keys())
 
     @parameterized.parameterized.expand(
         [

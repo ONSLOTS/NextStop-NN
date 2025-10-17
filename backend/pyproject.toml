@@ -24,6 +24,7 @@ dev = [
 [tool.ruff.lint]
 select = [ "E", "F", "I", "A", "ANN", "COM", "ISC", "RET", "Q", "N" ]
 
+
 ignore = [
     "D203",
     "D213",
@@ -47,3 +48,6 @@ venv = ".venv"
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.ruff.lint.isort]
+known-first-party = ["schemas", "services", "models", "core", "db", "api"]

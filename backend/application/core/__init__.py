@@ -1,1 +1,1 @@
-"""Very helpful docstring."""
+"""Module for reading env variables."""

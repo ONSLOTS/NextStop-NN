@@ -1,7 +1,7 @@
 from qdrant_client import QdrantClient, models
 
-from application.core.config import settings
-from application.models.place_payload import PlacePayload
+from core.config import settings
+from models.place_payload import PlacePayload
 
 
 class QdrantRepository:
