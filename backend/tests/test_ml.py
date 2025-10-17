@@ -3,7 +3,8 @@ import unittest
 
 import parametrize
 
-import ml
+import application.models.place_payload as place_payload
+import application.services.ml as ml
 
 TESTS_FOR_TEST: list[str] = [
     'B Ярославской области разрешили работу бань, но без посетителей',
@@ -22,6 +23,23 @@ class TestTextGenerationModel(unittest.TestCase):
     def test_call(self: typing.Self) -> None:
         ans: str = ml.text_generation_model(PROMPT_FOR_TEST)
         self.assertIsInstance(ans, str)
+
+    def test_get_desc(self: typing.Self) -> None:
+        prompt = (
+            'Хочу в течении прогулки посетить музей. Желательно музей какого-то поэта'
+        )
+        place = place_payload.PlacePayload(
+            title='Исторический музей',
+            description='Исторический музей про Пушкина',
+            score=None,
+            latitude=10,
+            longitude=10,
+        )
+        response = ml.text_generation_model.get_desc_selection(
+            prompt,
+            [place],
+        )
+        self.assertIsInstance(response[0], str)
 
 
 class TestEmbeddingModel(unittest.TestCase):
