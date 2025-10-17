@@ -210,3 +210,4 @@ __marimo__/
 
 # Docker
 .DS_Store
+qdrant_data/
