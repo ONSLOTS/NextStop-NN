@@ -209,4 +209,4 @@ marimo/_lsp/
 __marimo__/
 
 # Docker
-/qdrant_data
+.DS_Store

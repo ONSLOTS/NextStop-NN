@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class PlacePayload(BaseModel):
+    id: int
     title: str
     description: str
     score: float | None
