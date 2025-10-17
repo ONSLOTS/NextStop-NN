@@ -42,6 +42,7 @@ class QdrantRepository:
             raw_payload = point.payload or {}
 
             payload_data = {
+                'id': raw_payload.get('id'),
                 'title': raw_payload.get('title'),
                 'description': raw_payload.get('desc'),
                 'score': point.score,
