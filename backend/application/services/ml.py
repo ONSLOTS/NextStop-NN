@@ -14,7 +14,11 @@ class _TextGenerationModel:
     name_model: str = 'Qwen/Qwen3-0.6B'
 
     def __init__(self: typing.Self) -> None:
-        self._tokenizer = transformers.AutoTokenizer.from_pretrained(self.name_model)
+        self._tokenizer = transformers.AutoTokenizer.from_pretrained(
+            self.name_model,
+            dtype='auto',
+            device_map='auto',
+        )
         self._model = transformers.AutoModelForCausalLM.from_pretrained(
             self.name_model,
             dtype='auto',
