@@ -29,6 +29,7 @@ class TestTextGenerationModel(unittest.TestCase):
             'Хочу в течении прогулки посетить музей. Желательно музей какого-то поэта'
         )
         place = place_payload.PlacePayload(
+            id = 2,
             title='Исторический музей',
             description='Исторический музей про Пушкина',
             score=None,

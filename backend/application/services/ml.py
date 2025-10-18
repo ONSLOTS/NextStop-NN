@@ -14,7 +14,11 @@ class _TextGenerationModel:
     name_model: str = 'Qwen/Qwen3-0.6B'
 
     def __init__(self: typing.Self) -> None:
-        self._tokenizer = transformers.AutoTokenizer.from_pretrained(self.name_model)
+        self._tokenizer = transformers.AutoTokenizer.from_pretrained(
+            self.name_model,
+            dtype='auto',
+            device_map='auto',
+        )
         self._model = transformers.AutoModelForCausalLM.from_pretrained(
             self.name_model,
             dtype='auto',
@@ -29,7 +33,8 @@ class _TextGenerationModel:
         ans: list[str] = []
         for place in places:
             local_prompt: str = (
-                f'Напиши почему выбранное место ({place.title}) подходит запросу пользователя. '
+                f'Пиши максимально коротоко. '
+                f'Напиши почему выбранное место ({place.title}) подходит запросу пользователя, обращаясь к нему на вы. '
                 f'Запрос пользователя: {prompt}. '
                 f'В ответе используй факты из описания выбранного места: {place.description}. '
             )
