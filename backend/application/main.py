@@ -1,6 +1,8 @@
 """Entrypoint of the application."""
 
 import itertools
+import pathlib
+import pickle
 
 import fastapi
 import uvicorn
@@ -53,6 +55,21 @@ def get_best_route(
     """Get best route for user."""
     repository: db.qdrant_repo.QdrantRepository = db.qdrant_repo.QdrantRepository()
     places: models.place_payload.PlacePayload = repository.search(embedding)
+    reachability_matrix: list[list[float]] = (
+        [[0.0] * 258 for _ in range(258)]
+    )
+    try:
+        file_path = pathlib.Path(__file__).parent.parent / 'open_street_map.pkl'
+        with open(file_path, 'rb') as f:
+            reachability_matrix = pickle.load(f)
+        for row in range(258):
+            for col in range(258):
+                reachability_matrix[row][col] = max(0.2, reachability_matrix[row][col] // 3600)
+    except FileNotFoundError:
+        print('File not found')
+    except pickle.UnpicklingError:
+        print('Error while attempting to load pkl file')
+
 
     if places:
         len_perm = min(MAX_PLACES_COUNT, len(places))
@@ -61,15 +78,21 @@ def get_best_route(
         best_permutation: list[models.place_payload.PlacePayload] = []
         while shift <= MAX_SHIFT and len_perm - shift >= 0:
             print(shift)
-            time_to_pass: int = len_perm - shift
             permutations: itertools.permutations[models.place_payload.PlacePayload] = (
                 itertools.permutations(places, len_perm - shift)
                 )
             
             for perm in permutations:
+                time_to_pass: int = 0
+                perm_score: float = 0
+                for i, place in enumerate(perm):
+                    if i == 0:
+                        perm_score += place.score
+                        continue
+                    perm_score += place.score
+                    time_to_pass += reachability_matrix[perm[i - 1].id][place.id]
                 if time_to_pass - 1 > time_for_walk:
                     continue
-                perm_score = sum(item.score for item in perm)
                 if perm_score > best_score:
                     best_permutation = perm[:]
                     best_score = perm_score
@@ -80,12 +103,20 @@ def get_best_route(
                     itertools.permutations(places, 1)
                     )
             for perm in permutations:
-                    if time_to_pass - 1 > time_for_walk:
+                time_to_pass: int = 0
+                perm_score: float = 0
+                for i, place in enumerate(perm):
+                    if i == 0:
+                        perm_score += place.score
                         continue
-                    perm_score = sum(item.score for item in perm)
-                    if perm_score > best_score:
-                        best_permutation = perm[:]
-                        best_score = perm_score
+                    perm_score += place.score
+                    time_to_pass += reachability_matrix[perm[i - 1].id][place.id]
+                if time_to_pass - 1 > time_for_walk:
+                    continue
+                if perm_score > best_score:
+                    best_permutation = perm[:]
+                    best_score = perm_score
+
         return best_permutation if best_permutation else None
         
     return None
