@@ -10,6 +10,7 @@ dependencies = [
     "accelerate>=1.10.1",
     "fastapi[all]>=0.119.0",
     "hf-xet>=1.1.10",
+    "parameterized>=0.9.0",
     "openpyxl>=3.1.5",
     "pandas>=2.3.3",
     "parametrize>=0.1.1",
@@ -40,6 +41,7 @@ torchvision = [
 [tool.ruff.lint]
 select = [ "E", "F", "I", "A", "ANN", "COM", "ISC", "RET", "Q", "N" ]
 
+
 ignore = [
     "D203",
     "D213",
@@ -63,3 +65,6 @@ venv = ".venv"
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.ruff.lint.isort]
+known-first-party = ["schemas", "services", "models", "core", "db", "api"]

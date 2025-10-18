@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as f
 import transformers
 
-from ..models import place_payload
+from models import place_payload
 
 
 class _TextGenerationModel:
@@ -33,7 +33,8 @@ class _TextGenerationModel:
         ans: list[str] = []
         for place in places:
             local_prompt: str = (
-                f'Напиши почему выбранное место ({place.title}) подходит запросу пользователя. '
+                f'Пиши максимально коротоко. '
+                f'Напиши почему выбранное место ({place.title}) подходит запросу пользователя, обращаясь к нему на вы. '
                 f'Запрос пользователя: {prompt}. '
                 f'В ответе используй факты из описания выбранного места: {place.description}. '
             )
