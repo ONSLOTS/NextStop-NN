@@ -27,12 +27,15 @@ def handle_input(
     best_route: list[models.place_payload.PlacePayload] | None = services.utils.get_best_route(
         places,
         data.time_for_walk,
+        data.latitude,
+        data.longitude,
     )
     print(best_route)
     print(len(best_route))
     if best_route is not None:
         explanation = services.ml.text_generation_model.get_desc_selection(
-            data.prompt, best_route,
+            data.prompt,
+            best_route,
             )
         print(explanation)
         
