@@ -1,8 +1,10 @@
+import concurrent.futures
 import typing
 import unittest
 import unittest.mock as mock
 
 import fastapi.testclient
+import httpx
 import parameterized
 
 import application.main
@@ -19,17 +21,17 @@ class TestUserInput(unittest.TestCase):
                     title='Танковый музей',
                     description='Танковый музей',
                     score=0.77,
-                    latitude=53.12,
-                    longitude=13.12,
+                    latitude=56.12,
+                    longitude=43.12,
                 ),
             ],
         ):
             client = fastapi.testclient.TestClient(application.main.app)
             data = {
                 'prompt': 'Хочу прогуляться рядом с военной техникой',
-                'time_for_walk': 5,
-                'latitude': 14.88,
-                'longitude': 88.41,
+                'time_for_walk': 6,
+                'latitude': 56.307,
+                'longitude': 43.9843,
             }
             url = '/handle'
             response = client.post(url=url, json=data)
@@ -88,3 +90,27 @@ class TestUserInput(unittest.TestCase):
             url = '/handle'
             response = client.post(url=url, json=data)
             self.assertNotEqual(response.status_code, 200, msg=name)
+    
+
+    def test_limiter(self) -> None:
+        client = fastapi.testclient.TestClient(application.main.app)
+        data = {
+            'prompt': 'Пиво, танк, танчик, балтика',
+            'time_for_walk': 5,
+            'latitude': 56.307,
+            'longitude': 43.9843,
+        }
+        url = '/handle'
+
+        def make_request() -> httpx.Response:
+            return client.post(url, json=data)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            futures = [executor.submit(make_request) for _ in range(4)]
+            results = [future.result() for future in futures]
+
+        status_codes = [r.status_code for r in results]
+        
+        self.assertEqual(len(status_codes), 4)
+        self.assertEqual(status_codes[:3], [200, 200, 200])
+        self.assertEqual(status_codes.count(429), 1)

@@ -8,6 +8,7 @@ import models.place_payload
 class UserInput(pydantic.BaseModel):
     """Pydantic model of the user input."""
 
+    # request: fastapi.Request
     prompt: str = pydantic.Field(..., max_length=200)
     time_for_walk: int = pydantic.Field(..., le=24, ge=1)
     latitude: float = pydantic.Field(..., ge=-90, le=90)

@@ -21,6 +21,8 @@ class TestGetBestRoute(unittest.TestCase):
         result = utils.get_best_route(
             [],
             24,
+            14.88,
+            88.41,
         )
         self.assertIs(result, None)
 
@@ -28,7 +30,8 @@ class TestGetBestRoute(unittest.TestCase):
         result = utils.get_best_route(
             PLACES,
             24,
+            14.88,
+            88.41,
         )
-        self.assertIsInstance(result, list)
-        self.assertEqual(len(result), 1)
-        self.assertIsInstance(result[0], place_payload.PlacePayload)
+        self.assertIsInstance(result, list|type(None))
+

@@ -17,6 +17,7 @@ dependencies = [
     "qdrant-client>=1.15.1",
     "transformers>=4.57.0",
     "parameterized>=0.9.0",
+    "slowapi>=0.1.9",
 ]
 
 [dependency-groups]

@@ -1,22 +1,30 @@
 """Entrypoint of the application."""
 
 import fastapi
+import slowapi
+import slowapi.errors
 import uvicorn
 
 import db.qdrant_repo
 import models.place_payload
 import schemas.user_io
+import services.limiter
 import services.ml
 import services.utils
 
-MAX_PLACES_COUNT = 5
-MAX_SHIFT = 3
-
 app = fastapi.FastAPI()
+
+app.state.limiter = services.limiter.limiter
+
+app.add_exception_handler(
+    slowapi.errors.RateLimitExceeded,
+    slowapi._rate_limit_exceeded_handler)
 
 
 @app.post('/handle')
+@services.limiter.limiter.limit('3/second')
 def handle_input(
+    request: fastapi.Request,
     data: schemas.user_io.UserInput,
 ) -> schemas.user_io.UserOutput:
     """Endpoint for receiving user input from frontend."""
@@ -30,8 +38,8 @@ def handle_input(
         data.latitude,
         data.longitude,
     )
-    print(best_route)
-    print(len(best_route))
+    # print(best_route)
+    # print(len(best_route))
     if best_route is not None:
         explanation = services.ml.text_generation_model.get_desc_selection(
             data.prompt,
@@ -46,9 +54,14 @@ def handle_input(
         }
                 
     
-    return ValueError(
-        'There are no places that matches your description. Please try to search something else.',
-        )
+    return schemas.user_io.UserOutput(
+        walking_time=None,
+        walking_path=[],
+        explanation=[
+            'There are no places that matches your description.'
+            ' Please try to search something else.',
+            ],
+    )
 
 
 if __name__ == '__main__':
