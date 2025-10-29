@@ -70,6 +70,7 @@ def get_best_route(
     len_perm = min(MAX_PLACES_COUNT, len(places))
     shift: int = 0
     best_score: int = 0
+    best_time: int = 10 ** 15
     best_permutation: list[models.place_payload.PlacePayload] = []
     while shift <= MAX_SHIFT and len_perm - shift >= 0:
         permutations: itertools.permutations[models.place_payload.PlacePayload] = (
@@ -98,7 +99,12 @@ def get_best_route(
             if perm_score > best_score:
                 best_permutation = list(perm)
                 best_score = perm_score
+                best_time = time_to_pass
+            elif perm_score == best_score:
+                if time_to_pass < best_time:
+                    best_permutation = list(perm)
+                    best_time = time_to_pass
         shift += 1
     
 
-    return best_permutation if best_permutation else None
+    return (best_permutation, best_time // 60) if best_permutation else None
