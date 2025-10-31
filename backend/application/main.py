@@ -14,11 +14,21 @@ import services.utils
 
 app = fastapi.FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
+
 app.state.limiter = services.limiter.limiter
 
 app.add_exception_handler(
-    slowapi.errors.RateLimitExceeded,
-    slowapi._rate_limit_exceeded_handler)
+    slowapi.errors.RateLimitExceeded, slowapi._rate_limit_exceeded_handler,
+)
 
 
 @app.post('/handle')
@@ -32,11 +42,13 @@ def handle_input(
     embedding: list[float] = services.ml.embedding_model(data.prompt)
     repository: db.qdrant_repo.QdrantRepository = db.qdrant_repo.QdrantRepository()
     places: models.place_payload.PlacePayload = repository.search(embedding)
-    route_info: tuple[list[models.place_payload.PlacePayload], int] = services.utils.get_best_route(
-        places,
-        data.time_for_walk,
-        data.latitude,
-        data.longitude,
+    route_info: tuple[list[models.place_payload.PlacePayload], int] = (
+        services.utils.get_best_route(
+            places,
+            data.time_for_walk,
+            data.latitude,
+            data.longitude,
+        )
     )
     best_route: list[models.place_payload.PlacePayload] = route_info[0]
     best_time: int = route_info[1]
@@ -47,23 +59,22 @@ def handle_input(
         explanation = services.ml.text_generation_model.get_desc_selection(
             data.prompt,
             best_route,
-            )
+        )
         print(explanation)
-        
+
         return {
             'walking_time': best_time,
             'walking_path': best_route,
             'explanation': explanation,
         }
-                
-    
+
     return schemas.user_io.UserOutput(
         walking_time=None,
         walking_path=[],
         explanation=[
             'There are no places that matches your description.'
             ' Please try to search something else.',
-            ],
+        ],
     )
 
 
