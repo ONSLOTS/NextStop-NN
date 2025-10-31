@@ -15,6 +15,7 @@ dependencies = [
     "pandas>=2.3.3",
     "parametrize>=0.1.1",
     "qdrant-client>=1.15.1",
+    "requests>=2.31.0",
     "transformers>=4.57.0",
     "parameterized>=0.9.0",
     "slowapi>=0.1.9",
