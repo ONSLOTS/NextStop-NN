@@ -1,0 +1,24 @@
+<h1 class="main-title">AI-Помощник туриста</h1>
+<form class="preferences-form" [formGroup]="itineraryPreferences" (ngSubmit)="onSubmit()">
+    <div class="preferences-form__item">
+        <label for="preferences">Какие места вы бы хотели посетить?</label>
+        <input class="input" id="preferences" formControlName="prompt" placeholder="Введите запрос..." type="text">
+    </div>
+    <div class="preferences-form__item">
+        <label for="time-to-spend">Сколько времени готовы выделить?</label>
+        <input class="input" id="time-to-spend" formControlName="time_for_walk" placeholder="Например 2 часа" type="number">
+    </div>
+    <div class="preferences-form__item">
+        <label for="location">Где вы сейчас находитесь?</label>
+        <input class="input" id="location" formControlName="address" #locationInput placeholder="Введите адрес..." type="text">
+        <button class="detect-location-button" (click)="getLocation()" type="button">Определить автоматически</button>
+        @if(suggestions && suggestions.length > 0) {
+        <ul class="suggestion-list">
+            @for (suggestion of suggestions; track $index) {
+            <li class="suggesion"><button (click)="selectSuggestion(suggestion.item)" type="button">{{ suggestion.item }}</button></li>
+            }
+        </ul>
+        }
+    </div>
+    <button type="submit">submit</button>
+</form>
