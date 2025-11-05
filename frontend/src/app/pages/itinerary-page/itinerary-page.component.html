@@ -1,0 +1,13 @@
+Ваш маршрут:
+@if (itinerary(); as itinerary) {
+    <app-map [itineraryPoints]="itinerary.walking_path"></app-map>
+    @for (point of itinerary.walking_path; track $index) {
+        <div class="point">
+            {{point.title}}
+            {{point.description}}
+        </div>
+    }
+}
+@else {
+    <div class="spinner">Waiting...</div>
+}
